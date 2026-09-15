@@ -1,0 +1,4 @@
+interface:
+  display_name: "Installer mon AIOS — atelier"
+  short_description: "Créer un AIOS depuis un Grill-me, avec Close et Décisions"
+  default_prompt: "Utilise $aios-bootstrap-atelier pour installer mon AIOS dans le dossier que je choisis à partir de mon Grill-me."
