@@ -84,12 +84,7 @@ def render(root, profile, source):
                 ('4 - Archives', 'archives', 'Archives')]
     for folder, index, title in sections:
         write(root, f'{folder}/{index}.md', f'# {title}\n')
-    paths = ['Sources', 'Wiki/Concepts', 'Wiki/Analyses', 'Explorations', 'Contenus-bruts', 'Publications']
-    resource_lines = ['# Ressources', '', '[Contexte personnel](Personnel/contexte.md)', '']
-    for path in paths:
-        write(root, f'3 - Ressources/{path}/index.md', f'# {path.split("/")[-1]}\n\nObjets créés selon les besoins, avec provenance.')
-        resource_lines.append(f'- [{path}](<{path}/index.md>)')
-    write(root, '3 - Ressources/ressources.md', '\n'.join(resource_lines))
+    write(root, '3 - Ressources/ressources.md', '# Ressources\n\n[Contexte personnel](Personnel/contexte.md)\n\nDocuments et références ajoutés selon les besoins de l’activité.')
     source_path = root / '.ai/inputs/grill-me.md'
     source_path.parent.mkdir(parents=True, exist_ok=True)
     source_path.write_text(source, encoding='utf-8')

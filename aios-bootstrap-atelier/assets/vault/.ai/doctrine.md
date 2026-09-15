@@ -10,12 +10,12 @@
 
 Le pilotage et les skills vivent dans `.ai/`. Les entrées propres à un assistant renvoient à cette source commune. Le modèle de langage peut changer ; les documents et les choix restent au même endroit.
 
-## Connaissances et travail
+## Documents et travail
 
-Une source originale est une pièce de provenance. Une fiche de lecture explique ce qu'on en retient. Un concept vivant combine des idées, nuances, contradictions et références. Une analyse répond à une question transversale. Ces objets vivent dans Sources et Wiki, et ne sont pas des tâches.
+Les documents de travail rejoignent le projet ou la responsabilité qu'ils servent. Les références réutilisables vivent dans Ressources. Une capture encore à trier reste dans Inbox. Les sous-dossiers apparaissent lorsqu'un besoin réel les justifie ; aucun classement spécialisé n'est imposé.
 
-Une exploration conserve une pensée en cours : synthèse, échanges attribués, pistes et questions ouvertes. Un projet porte un résultat choisi. Une responsabilité continue ne devient pas un projet permanent. Une matière éditoriale n'est pas une publication : la publication exige une date, un canal et une référence attestés.
+Une note de réflexion conserve une pensée en cours : synthèse, échanges attribués, pistes et questions ouvertes. Un projet porte un résultat choisi. Une responsabilité continue ne devient pas un projet permanent. Une idée évoquée ne devient pas un engagement.
 
-Préserver l'original selon le choix de la personne ; référencer une pièce déjà conservée plutôt que la doubler. Ne pas créer une fiche ou un concept pour remplir une catégorie. Les relations doivent aider à comprendre : s'appuie sur, nuance, contredit, illustre, dérive de, avec une justification.
+Préserver l'original selon le choix de la personne ; référencer une pièce déjà conservée plutôt que la doubler. Une synthèse reste distincte de sa source. Ajouter des liens lorsqu'ils aident à retrouver le contexte et les documents utiles.
 
 Les outils sont la référence pour leurs données vivantes ; une copie locale est datée. L'archive préserve l'historique. Aucun délai de purge ni sauvegarde n'est programmé par l'installation.

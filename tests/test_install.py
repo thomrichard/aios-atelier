@@ -37,6 +37,7 @@ class InstallTests(unittest.TestCase):
         self.assertEqual((self.target / '.ai/inputs/grill-me.md').read_text(), self.source.read_text())
         self.assertTrue((self.target / '1 - Projets/guide/guide.md').is_file())
         self.assertFalse((self.target / '1 - Projets/podcast').exists())
+        self.assertEqual({p.name for p in (self.target / '3 - Ressources').iterdir()}, {'ressources.md', 'Personnel'})
         for app in ('.agents', '.claude'):
             for name in ('close', 'decisions', 'gerer-aios'):
                 wrapper = self.target / app / 'skills' / name / 'SKILL.md'

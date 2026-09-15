@@ -1,6 +1,6 @@
 # AIOS atelier
 
-Un AIOS générique à personnaliser depuis un entretien Grill-me : fichiers IPCRA, noyau partagé `.ai/`, wiki, clôture et mémoire des décisions. Aucun compte ni outil métier n'est installé.
+Un AIOS générique à personnaliser depuis un entretien Grill-me : fichiers IPCRA, noyau partagé `.ai/`, clôture et mémoire des décisions. Aucun compte ni outil métier n'est installé.
 
 ## Pendant l'atelier
 
@@ -22,7 +22,7 @@ L'assistant doit pouvoir lire et modifier les fichiers. Les noms de commande var
 
 | Dès le départ | Selon l'usage, ensuite |
 |---|---|
-| Contexte, IPCRA, wiki, recherche et rangement | Skills de métier ou de production |
+| Contexte, IPCRA, recherche et rangement | Skills de métier ou de production |
 | Close et point de reprise | Connexions mail, agenda et autres services |
 | Décisions avec motifs et révisions | Statistiques, publication et CRM |
 | Explorations, maintenance, amélioration | Automatisations explicitement demandées |

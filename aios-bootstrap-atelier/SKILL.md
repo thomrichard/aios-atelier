@@ -1,6 +1,6 @@
 ---
 name: aios-bootstrap-atelier
-description: Installer un AIOS générique et personnalisé à partir d'un Grill-me ou d'un contexte d'activité fourni, avec noyau partagé .ai, wiki, clôture et mémoire des décisions. Utiliser pour créer le socle d'un participant à l'atelier ou son AIOS personnel.
+description: Installer un AIOS générique et personnalisé à partir d'un Grill-me ou d'un contexte d'activité fourni, avec structure IPCRA, noyau partagé .ai, clôture et mémoire des décisions. Utiliser pour créer le socle d'un participant à l'atelier ou son AIOS personnel.
 ---
 
 # Installer un AIOS à partir de son activité
@@ -32,7 +32,7 @@ Sans terminal/Python mais avec accès aux fichiers, créer le même arbre depuis
 ## Ce qui est inclus
 
 - IPCRA, contexte personnel, doctrine, conventions, connexions documentées.
-- Sources et wiki : concepts et analyses ; explorations ; projets et publications distincts.
+- Ressources simples : documents et références rangés selon les besoins de l'activité. Aucun wiki ni dossier de concepts n'est installé.
 - `gerer-aios` : capture, rangement, recherche, ingestion, exploration, maintenance et amélioration.
 - `close` : consolidation et point de reprise.
 - `decisions` : choix confirmés, motifs, alternatives et historique des révisions.

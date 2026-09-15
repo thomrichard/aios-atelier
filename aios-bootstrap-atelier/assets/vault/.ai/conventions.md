@@ -4,7 +4,7 @@ Noms de fichiers en kebab-case, liens Markdown relatifs. Utiliser `<...>` autour
 
 Fiches autonomes : frontmatter `id`, `type`, `title`, `created`, `updated` ; `status` quand utile. Un identifiant est stable et unique. Les index, journaux et bilans n'exigent pas de frontmatter.
 
-Types utiles : projet, casquette, source, concept, analyse, exploration, contenu-brut, publication, decision. Une fiche expose son propos, ses sources, son statut et ses relations utiles. Une échéance absente n'est pas inventée.
+Types utiles : projet, casquette, reference, note, decision. Une fiche expose son propos, ses sources, son statut et ses liens utiles. Une échéance absente n'est pas inventée.
 
 Statuts de projet : envisage, actif, en-attente, termine, abandonne. Décision : active ou remplacee. Une proposition reste explicitement non confirmée. Les affirmations d'une personne et une vérification externe sont deux preuves différentes.
 
