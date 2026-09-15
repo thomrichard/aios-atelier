@@ -33,12 +33,14 @@ Sans terminal/Python mais avec accès aux fichiers, créer le même arbre depuis
 
 - IPCRA, contexte personnel, doctrine, conventions, connexions documentées.
 - Ressources simples : documents et références rangés selon les besoins de l'activité. Aucun wiki ni dossier de concepts n'est installé.
-- `gerer-aios` : capture, rangement, recherche, ingestion, exploration, maintenance et amélioration.
+- `gerer-aios` : capture, rangement, recherche, ingestion, exploration et amélioration.
 - `close` : consolidation et point de reprise.
 - `decisions` : choix confirmés, motifs, alternatives et historique des révisions.
 - `AGENTS.md` et `CLAUDE.md` routent vers le même noyau. Entrées de skills légères sous `.agents/skills/` et `.claude/skills/` ; les méthodes vivent une seule fois dans `.ai/skills/`.
 
 Close et Décisions s'installent immédiatement. On peut les enseigner dans un second temps sans demander une nouvelle installation. Leur présence ne crée aucun hook ni planification. Selon l'application, invoquer `/close`, `$close`, ou simplement « clôture cette discussion en suivant la skill close ». La disponibilité des commandes doit être constatée dans l'environnement du participant.
+
+L’audit de cohérence reste une ressource complémentaire du Club SMART, hors installation. Les vérifications des fichiers modifiés pendant une opération restent normales ; elles ne constituent pas un audit global.
 
 Les skills métier, styles, connecteurs et automatisations sont des extensions ultérieures motivées par un usage. Ne pas installer YouTube, CRM, statistiques, un fournisseur d'IA ou une charte de marque par défaut. Mail et agenda sont documentés comme non vérifiés tant qu'aucun essai de lecture autorisé ne les confirme.
 

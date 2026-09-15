@@ -25,7 +25,9 @@ L'assistant doit pouvoir lire et modifier les fichiers. Les noms de commande var
 | Contexte, IPCRA, recherche et rangement | Skills de métier ou de production |
 | Close et point de reprise | Connexions mail, agenda et autres services |
 | Décisions avec motifs et révisions | Statistiques, publication et CRM |
-| Explorations, maintenance, amélioration | Automatisations explicitement demandées |
+| Explorations et amélioration | Automatisations explicitement demandées |
+
+L’audit de cohérence est hors package ; il sera à retrouver dans les ressources du Club SMART. L’interface de workflows à nœuds est en préparation et n’est pas encore installée par cette version.
 
 Le package reproduit les principes du socle, pas les données, la charte, le globe ou les outils personnels de son auteur. Un ajout à un AIOS existant demande une comparaison accompagnée ; l'installateur refuse de remplacer un dossier non vide.
 

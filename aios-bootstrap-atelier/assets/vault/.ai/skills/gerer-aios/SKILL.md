@@ -1,6 +1,6 @@
 ---
 name: gerer-aios
-description: Ranger les documents, rechercher, conserver une réflexion et entretenir cet AIOS IPCRA. Utiliser pour les opérations internes du socle.
+description: Ranger les documents, rechercher et conserver une réflexion dans cet AIOS IPCRA. Utiliser pour les opérations internes du socle.
 ---
 
 # Gérer cet AIOS
@@ -18,10 +18,6 @@ Lire les documents réellement disponibles, citer leur provenance et la portée 
 ## Explorer
 
 Créer ou reprendre une note dans le projet concerné ou dans Ressources si la réflexion est transversale. Une seule question à la fois selon les branches choisies. Sauvegarder chaque réponse avant la suivante ; conserver un journal attribué et une synthèse distincte. Séparer faits ou positions de la personne, pistes provisoires, suggestions de l'IA, questions ouvertes et décisions confirmées. Une correction s'ajoute à l'histoire. Une pause n'oblige pas à lancer un projet. Informations privées : parcours Personnel et résumé général sans détails.
-
-## Entretenir
-
-Contrôle borné selon la demande : liens, identifiants, doublons éventuels, provenance manquante et décisions remplacées. Ne pas fusionner au seul titre ressemblant. Corriger les erreurs non ambiguës dans le périmètre autorisé. Préserver les archives ; aucune suppression globale ou purge programmée. Consigner le bilan, les corrections, les réserves et les zones non examinées.
 
 ## Améliorer
 

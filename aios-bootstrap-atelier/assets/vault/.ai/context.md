@@ -13,7 +13,7 @@ Le système est le dossier contenant ce fichier `.ai/context.md`. Lire seulement
 
 ## Méthodes
 
-- Ranger, rechercher, intégrer, explorer, entretenir, améliorer : [gerer-aios](skills/gerer-aios/SKILL.md).
+- Ranger, rechercher, intégrer, explorer, améliorer : [gerer-aios](skills/gerer-aios/SKILL.md).
 - Clôturer ou reprendre une discussion : [close](skills/close/SKILL.md).
 - Arbitrer, enregistrer ou retrouver un choix : [decisions](skills/decisions/SKILL.md).
 
