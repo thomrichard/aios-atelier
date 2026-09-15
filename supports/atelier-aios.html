@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ton AIOS en pratique — Atelier du 15 septembre</title><meta name="description" content="Support de travail de l’atelier Club SMART : contexte, décisions, Close et connexions. Navigation à deux dimensions."><style>
+  :root{
+    --bg:#FAFAFA; --surface:#FFFFFF; --ink:#0B0B0B; --navy:#233039;
+    --fg-1:#0B0B0B; --fg-3:#5F6A74;
+    --border:rgba(11,11,11,.10); --border-soft:rgba(11,11,11,.06);
+    --teal:#3FA4B1; --amber:#F5AE2A;
+    --teal-strong:#17798D; --amber-strong:#8F5A09;
+    --mark-teal:#0E8FA6; --mark-amber:#A96A0B;
+    --teal-tint:rgba(63,164,177,.08); --amber-tint:rgba(245,174,42,.10);
+    --track:#ECEFF0; --btn-ink:#FFFFFF;
+    --shadow:0 4px 12px rgba(11,11,11,.08),0 2px 4px rgba(11,11,11,.04);
+    --shadow-strong:0 8px 24px rgba(11,11,11,.16),0 2px 6px rgba(11,11,11,.08);
+    --font-display:'Manrope',ui-sans-serif,system-ui,sans-serif;
+    --font-body:'Inter Tight',ui-sans-serif,system-ui,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+    --font-hand:'Bradley Hand','Marker Felt','Segoe Print','Comic Sans MS',cursive;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#14191E; --surface:#1D252B; --ink:#E7ECEF; --navy:#233039;
+      --fg-1:#E7ECEF; --fg-3:#93A1AA;
+      --border:rgba(231,236,239,.14); --border-soft:rgba(231,236,239,.07);
+      --teal:#57B8C4; --amber:#F5AE2A;
+      --teal-strong:#7CC8D2; --amber-strong:#F0BC5B;
+      --mark-teal:#2B9DAF; --mark-amber:#BC8118;
+      --teal-tint:rgba(87,184,196,.10); --amber-tint:rgba(245,174,42,.09);
+      --track:#252F36; --btn-ink:#0B0B0B;
+      --shadow:0 4px 14px rgba(0,0,0,.35),0 2px 4px rgba(0,0,0,.25);
+      --shadow-strong:0 10px 28px rgba(0,0,0,.5),0 3px 8px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14191E; --surface:#1D252B; --ink:#E7ECEF; --navy:#233039;
+    --fg-1:#E7ECEF; --fg-3:#93A1AA;
+    --border:rgba(231,236,239,.14); --border-soft:rgba(231,236,239,.07);
+    --teal:#57B8C4; --amber:#F5AE2A;
+    --teal-strong:#7CC8D2; --amber-strong:#F0BC5B;
+    --mark-teal:#2B9DAF; --mark-amber:#BC8118;
+    --teal-tint:rgba(87,184,196,.10); --amber-tint:rgba(245,174,42,.09);
+    --track:#252F36; --btn-ink:#0B0B0B;
+    --shadow:0 4px 14px rgba(0,0,0,.35),0 2px 4px rgba(0,0,0,.25);
+    --shadow-strong:0 10px 28px rgba(0,0,0,.5),0 3px 8px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"]{
+    --bg:#FAFAFA; --surface:#FFFFFF; --ink:#0B0B0B; --navy:#233039;
+    --fg-1:#0B0B0B; --fg-3:#5F6A74;
+    --border:rgba(11,11,11,.10); --border-soft:rgba(11,11,11,.06);
+    --teal:#3FA4B1; --amber:#F5AE2A;
+    --teal-strong:#17798D; --amber-strong:#8F5A09;
+    --mark-teal:#0E8FA6; --mark-amber:#A96A0B;
+    --teal-tint:rgba(63,164,177,.08); --amber-tint:rgba(245,174,42,.10);
+    --track:#ECEFF0; --btn-ink:#FFFFFF;
+    --shadow:0 4px 12px rgba(11,11,11,.08),0 2px 4px rgba(11,11,11,.04);
+    --shadow-strong:0 8px 24px rgba(11,11,11,.16),0 2px 6px rgba(11,11,11,.08);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--fg-1);
+    font-family:var(--font-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:var(--font-display);letter-spacing:-.02em;line-height:1.08;
+    text-wrap:balance;margin:0;color:var(--fg-1)}
+  p{margin:0 0 .9em;color:var(--fg-1);text-wrap:pretty}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--fg-3);font-weight:500}
+  .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+  /* ---------- deck mechanics ---------- */
+  #deck{height:100%;display:flex;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+  .slide{width:100vw;height:100%;flex:none;overflow:hidden}
+  .pane-wrap{transition:transform .5s cubic-bezier(.22,1,.36,1)}
+  .pane{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:60px clamp(20px,6vw,90px) 118px;position:relative}
+  .pane-inner{width:100%;max-width:900px}
+  .pane.detail .pane-inner{overflow-y:auto;max-height:calc(100vh - 190px);padding-right:6px}
+  @media (prefers-reduced-motion: reduce){ #deck,.pane-wrap{transition:none} }
+
+  /* ---------- slide heads : vrais titres ---------- */
+  .slide-head{text-align:center;margin-bottom:clamp(20px,3.5vh,36px)}
+  .slide-head .eyebrow{display:block;margin-bottom:14px}
+  .slide-title{font-size:clamp(30px,5.2vw,54px);font-weight:800}
+  .detail-head{text-align:center;margin-bottom:clamp(16px,3vh,28px)}
+  .detail-head .eyebrow{display:block;margin-bottom:10px}
+  .detail-title{font-size:clamp(24px,3.6vw,38px);font-weight:800}
+
+  /* ---------- chrome : navigation ultra-visible ---------- */
+  .nav-side{position:fixed;top:50%;transform:translateY(-50%);z-index:60;display:flex;
+    align-items:center;gap:10px;border:none;cursor:pointer;font-family:var(--font-display);
+    font-weight:700;font-size:14px;padding:14px 18px;border-radius:999px;
+    box-shadow:var(--shadow-strong);transition:transform .15s}
+  .nav-side:hover{transform:translateY(-50%) scale(1.05)}
+  .nav-side:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+  .nav-side:disabled{opacity:.18;cursor:default;pointer-events:none}
+  #nextBtn{right:16px;background:var(--teal);color:var(--btn-ink)}
+  #prevBtn{left:16px;background:var(--surface);color:var(--fg-1);border:1px solid var(--border)}
+  .nav-side .lbl{display:none}
+  @media(min-width:760px){.nav-side .lbl{display:inline}}
+
+  #downHint{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:60;
+    display:flex;align-items:center;gap:10px;border:none;cursor:pointer;
+    background:var(--teal);color:var(--btn-ink);font-family:var(--font-display);font-weight:700;
+    font-size:15px;padding:14px 24px;border-radius:999px;box-shadow:var(--shadow-strong)}
+  #downHint svg{animation:bob 1.5s ease-in-out infinite}
+  #downHint:hover{transform:translateX(-50%) scale(1.05)}
+  #downHint:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+  #downHint.hidden{display:none}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+  @media (prefers-reduced-motion: reduce){#downHint svg{animation:none}}
+
+  #upHint{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:60;display:none;
+    align-items:center;gap:8px;border:1px solid var(--border);cursor:pointer;background:var(--surface);
+    color:var(--fg-1);font-family:var(--font-display);font-weight:700;font-size:13px;
+    padding:10px 18px;border-radius:999px;box-shadow:var(--shadow)}
+  #upHint.show{display:flex}
+  #upHint:hover{color:var(--teal-strong);border-color:var(--teal)}
+  #upHint:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+
+  #themeToggle{position:fixed;top:16px;right:16px;z-index:60;width:44px;height:44px;border-radius:50%;
+    background:var(--surface);border:1px solid var(--border);color:var(--fg-3);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+  #themeToggle:hover{color:var(--teal-strong);border-color:var(--teal)}
+  #themeToggle:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+  #themeToggle .moon{display:none}
+  :root[data-theme="dark"] #themeToggle .sun{display:none}
+  :root[data-theme="dark"] #themeToggle .moon{display:block}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) #themeToggle .sun{display:none}
+    :root:not([data-theme="light"]) #themeToggle .moon{display:block}
+  }
+
+  #progress{position:fixed;bottom:24px;left:20px;z-index:60;display:flex;gap:7px;align-items:center}
+  #progress .counter{font-family:var(--font-mono);font-size:12px;color:var(--fg-3);margin-right:6px;
+    font-variant-numeric:tabular-nums}
+  #progress button{width:8px;height:8px;border-radius:50%;border:none;background:var(--track);
+    cursor:pointer;padding:0;transition:transform .2s,background .2s}
+  #progress button.on{background:var(--teal);transform:scale(1.6)}
+  #progress button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  @media(max-width:700px){#progress button{width:6px;height:6px}}
+
+  /* ---------- shared components ---------- */
+  .t-aios{color:var(--teal-strong)} .t-hermes{color:var(--amber-strong)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:22px 24px;box-shadow:var(--shadow)}
+  .accent-l{position:relative;overflow:hidden}
+  .accent-l::after{content:"";position:absolute;inset:0 auto 0 0;width:3px}
+  .accent-l.a::after{background:var(--teal)}
+  .accent-l.h::after{background:var(--amber)}
+  .verdict{border-left:3px solid var(--teal);padding:2px 0 2px 16px;margin:22px auto 0;
+    font-size:clamp(15px,2vw,18px);font-weight:500;max-width:760px;text-align:left}
+  .verdict b{font-weight:800}
+  ul.clean{padding-left:20px;margin:0;text-align:left}
+  ul.clean li{margin-bottom:11px;font-size:15.5px}
+  ul.clean li::marker{color:var(--teal)}
+
+  .bars{display:grid;grid-template-columns:70px 1fr 48px;gap:12px 14px;align-items:center;
+    margin:30px auto 4px;max-width:760px}
+  .bars .who{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--fg-3);text-align:left}
+  .track{height:22px;background:var(--track);border-radius:5px;overflow:hidden}
+  .fill{height:100%;border-radius:0 5px 5px 0;width:0;transition:width .9s cubic-bezier(.22,.8,.3,1)}
+  .fill.a{background:var(--mark-teal)} .fill.h{background:var(--mark-amber)}
+  .bars .val{font-family:var(--font-mono);font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;text-align:right}
+  @media (prefers-reduced-motion: reduce){.fill{transition:none}}
+
+  .fam{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    padding:4px 12px;border-radius:999px;font-weight:500;display:inline-block;margin-left:10px}
+  .fam.capital{background:var(--teal-tint);color:var(--teal-strong)}
+  .fam.action{background:var(--amber-tint);color:var(--amber-strong)}
+  .fam.durable{background:var(--track);color:var(--fg-3)}
+
+
+:root[data-theme="light"]{--bg:#faf8f3;--surface:#fffdfa;--teal:#17798d;--teal-strong:#126477;--track:#e4e5e1}
+:root[data-theme="dark"]{--teal:#7cc8d2;--btn-ink:#122027}
+html,body{height:100dvh}button,input,a{-webkit-tap-highlight-color:transparent}button{touch-action:manipulation}
+.pane{height:100%;padding:90px clamp(26px,12vw,185px) 115px}.pane-inner{max-width:960px;overflow-y:auto;max-height:calc(100dvh - 205px);scrollbar-width:thin;padding:3px 8px}
+.pane.detail .pane-inner{max-height:calc(100dvh - 205px)}
+.slide-head{margin-bottom:30px}.slide-head .eyebrow,.detail-head .eyebrow{margin-bottom:18px}.slide-title{font-size:clamp(29px,3.9vw,54px);line-height:1.12}.detail-title{font-size:clamp(27px,3vw,42px)}
+.hero-title{font-size:clamp(44px,6.5vw,88px);font-weight:800;line-height:1.03;max-width:13ch;margin:auto;letter-spacing:-.05em}
+.hero-sub{font-size:clamp(20px,2.4vw,30px);text-align:center;margin:28px auto 0;line-height:1.45;max-width:35ch}.hero-caption{text-align:center;margin-top:32px;font-size:16px;color:var(--fg-3)}
+.lead{font-size:clamp(20px,2.2vw,28px);text-align:center;line-height:1.4;margin-bottom:28px}
+.rows{max-width:850px;margin:0 auto}.row{display:grid;grid-template-columns:230px 1fr;gap:24px;padding:17px 0;border-bottom:1px solid var(--border)}.row:last-child{border:0}.row strong{font-size:clamp(17px,1.7vw,21px);color:var(--teal-strong)}.row p{font-size:clamp(17px,1.65vw,21px);line-height:1.45;margin:0}
+.columns{display:grid;grid-template-columns:repeat(3,1fr);gap:35px;margin-top:55px}.columns h3{font-size:clamp(23px,2.2vw,31px);margin:13px 0 20px}.columns p{font-size:clamp(18px,1.7vw,22px);line-height:1.5}
+.callout,.check{max-width:800px;margin:28px auto 0;border-left:3px solid var(--teal);padding:4px 0 4px 18px;font-size:clamp(17px,1.7vw,21px)}.check{border-color:var(--amber)}.small{font-size:16px;margin:25px auto 0;max-width:760px}
+ul.clean{max-width:790px;margin:auto}ul.clean li{font-size:clamp(18px,1.85vw,23px);line-height:1.45;margin:16px 0}code{font-family:var(--font-mono);font-size:.85em}
+.prompt{max-width:800px;margin:auto;background:var(--surface);border:1px solid var(--border);padding:28px 32px;border-radius:16px}.prompt blockquote{font-size:clamp(20px,2.1vw,28px);line-height:1.5;margin:16px 0 20px}.copy{font:inherit;font-size:15px;background:var(--teal);color:var(--btn-ink);border:0;border-radius:6px;padding:9px 13px;cursor:pointer}
+.howto{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.howto>div{border:2px dashed var(--border);border-radius:16px;padding:25px 20px;text-align:center}.howto>div:nth-child(2){transform:rotate(-1deg)}.howto h3{font-family:var(--font-hand);font-size:26px;margin:20px 0 10px}.howto p{font-size:19px}kbd{font-family:var(--font-mono);font-size:28px;padding:3px 10px;color:var(--teal-strong)}
+.filemap{display:grid;grid-template-columns:1fr 1fr;gap:18px}.filemap>div{text-align:center;background:var(--surface);border:1px solid var(--border);padding:25px;border-radius:12px}.filemap code{font-size:22px;color:var(--teal-strong)}.filemap span{display:block;margin-top:9px;font-size:18px}.filemap .shared{grid-column:1/-1}
+.checklist{max-width:760px;margin:auto;display:grid;gap:6px}.checklist label{display:flex;gap:18px;align-items:center;padding:18px 8px;border-bottom:1px solid var(--border);font-size:clamp(19px,2.1vw,27px);cursor:pointer}.checklist input{width:25px;height:25px;flex-shrink:0;accent-color:var(--teal-strong)}
+#progress{bottom:28px;max-width:30vw}#progress button{width:10px;height:10px}.nav-side{top:auto;bottom:70px;transform:none}.nav-side:hover{transform:scale(1.04)}#prevBtn{left:22px}#nextBtn{right:22px}
+#topbar{position:fixed;left:22px;top:18px;z-index:60;display:flex;gap:8px}#topbar button{font:inherit;font-size:13px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--fg-1);padding:10px 15px;cursor:pointer}#upHint{top:19px}#themeToggle{top:18px}
+#depth{position:fixed;right:26px;bottom:26px;font-family:var(--font-mono);font-size:12px;color:var(--fg-3)}
+dialog{color:var(--fg-1);background:var(--bg);border:1px solid var(--border);border-radius:20px;max-width:850px;width:calc(100% - 32px);max-height:85dvh;padding:30px;box-shadow:var(--shadow-strong)}dialog::backdrop{background:rgba(10,20,25,.55);backdrop-filter:blur(5px)}dialog h2{font-size:30px;margin:0 38px 25px 0}dialog p{font-size:17px}dialog .close-dialog{position:absolute;right:18px;top:16px;background:var(--surface);border:1px solid var(--border);border-radius:50%;width:34px;height:34px;font-size:22px;color:var(--fg-1);cursor:pointer}.toc-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}.toc-list button{text-align:left;padding:15px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--fg-1);font-size:17px;cursor:pointer}.toc-list button.current{border-color:var(--teal);color:var(--teal-strong)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:4px}h1:focus,h2:focus{outline:none}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:760px){.pane{padding:94px 20px 145px}.pane-inner,.pane.detail .pane-inner{max-height:calc(100dvh - 239px)}.row{grid-template-columns:1fr;gap:6px;padding:12px 0}.columns{grid-template-columns:1fr;gap:10px;margin-top:20px}.columns h3{margin:7px 0 8px}.columns p{margin-bottom:10px}.howto{grid-template-columns:1fr}.howto>div{padding:14px}.howto h3{margin:10px 0}.filemap{grid-template-columns:1fr}.filemap .shared{grid-column:auto}.filemap code{font-size:18px}.prompt{padding:22px 18px}.slide-head{margin-bottom:20px}.lead{margin-bottom:15px}#progress button{display:none}#progress{bottom:23px;left:22px}#downHint{bottom:14px;font-size:13px;padding:12px 17px}.nav-side{bottom:75px;padding:11px 15px}#depth{font-size:10px;right:18px;bottom:25px}#upHint{top:67px;padding:7px 14px}#topbar button{font-size:12px;padding:9px 11px}.toc-list{grid-template-columns:1fr}.eyebrow{font-size:10px;letter-spacing:.1em}.hero-caption{font-size:14px}#themeToggle{right:18px}.detail-head{margin-top:18px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{html,body{height:auto;overflow:visible;background:white;color:black}#deck{display:block;height:auto;transform:none!important}.slide{width:auto;height:auto;overflow:visible;break-after:page}.pane-wrap{height:auto!important;transform:none!important}.pane{height:auto!important;display:block;padding:30px 25px}.pane-inner,.pane.detail .pane-inner{overflow:visible;max-height:none}.pane.detail{border-top:1px solid #ddd;break-inside:avoid}.nav-side,#topbar,#themeToggle,#upHint,#downHint,#progress,#depth,dialog,.copy{display:none!important}.row p,.row strong,p,h1,h2,h3{color:black}.columns{margin-top:20px}body{--surface:white;--fg-1:black;--fg-3:#444;--teal-strong:#126477}}
+</style></head><body>
+<!-- Pattern adapté de deck-web / aios-vs-hermes-public-slides.html. Atelier : version de travail du 12 septembre 2026. -->
+<button id="themeToggle" aria-label="Basculer le thème clair / sombre" title="Thème">
+  <svg class="sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+  <svg class="moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+</button>
+<button class="nav-side" id="prevBtn" aria-label="Slide précédente">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+  <span class="lbl">Précédent</span>
+</button>
+<button class="nav-side" id="nextBtn" aria-label="Slide suivante">
+  <span class="lbl">Suivant</span>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+</button>
+<button id="downHint" aria-label="Voir le détail">
+  <span id="downLabel">Voir le détail</span>
+  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>
+</button>
+<button id="upHint" aria-label="Revenir au niveau précédent">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg>
+  <span>Remonter</span>
+</button>
+<div id="progress" aria-label="Navigation des slides"><span class="counter" id="counter"></span></div>
+
+<div id="topbar"><button id="tocBtn" title="Sommaire · O">Sommaire</button><button id="notesBtn" title="Notes d’animation · N">Notes</button><button id="fullBtn" title="Plein écran · F">Plein écran</button></div><span id="depth"></span><div id="live" class="sr-only" aria-live="polite"></div><main id="deck" aria-label="Présentation de l’atelier AIOS"><section class="slide" data-title="Ton AIOS en pratique" aria-label="1. Ton AIOS en pratique"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Club SMART · mardi 15 septembre 2026</span><h1 class="hero-title" tabindex="-1">Ton AIOS en pratique</h1></div><p class="hero-sub">Ton contexte, tes projets et tes méthodes.<br>Un travail que tu peux retrouver et poursuivre.</p><p class="hero-caption">Atelier avec Thomas Richard</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Avant de commencer</span><h2 class="detail-title" tabindex="-1">Un vrai sujet pour commencer</h2></div><p class="lead">Choisis un projet sur lequel tu aimerais avancer aujourd’hui.</p><div class="rows"><div class="row"><strong>Ton activité</strong><p>Quelques éléments pour que l’IA comprenne ton contexte.</p></div><div class="row"><strong>Ton projet</strong><p>Un objectif et la matière dont tu disposes déjà.</p></div><div class="row"><strong>Ton besoin</strong><p>Une question, une décision ou un document à préparer.</p></div></div></div></div></div></section><section class="slide" data-title="Notre parcours ensemble" aria-label="2. Notre parcours ensemble"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Le fil de l’atelier</span><h2 class="slide-title" tabindex="-1">Notre parcours ensemble</h2></div><div class="rows"><div class="row"><strong>01 · Installer</strong><p>Ton contexte et un premier projet.</p></div><div class="row"><strong>02 · Travailler</strong><p>Une décision, sa mémoire et la clôture de session.</p></div><div class="row"><strong>03 · Relier et reprendre</strong><p>Agenda, mails et reprise dans un autre assistant.</p></div></div><p class="callout">Les idées se suivent à l’horizontale. Les détails se trouvent en dessous.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Mode d’emploi</span><h2 class="detail-title" tabindex="-1">Comment naviguer</h2></div><div class="howto"><div><kbd>←</kbd> <kbd>→</kbd><h3>Les idées</h3><p>Passer au sujet précédent ou suivant.</p></div><div><kbd>↓</kbd><h3>Le détail</h3><p>Ouvrir une explication ou un exercice.</p></div><div><kbd>↑</kbd><h3>La synthèse</h3><p>Remonter d’un niveau.</p></div></div><p class="small">Les boutons et le balayage tactile fonctionnent aussi. F : plein écran. N : notes d’animation. O : sommaire.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Préparation</span><h2 class="detail-title" tabindex="-1">Notre point de départ</h2></div><ul class="clean"><li>Le fichier <code>mon-contexte-aios.md</code> préparé avec Grill-me.</li><li>Un dossier pour ton AIOS ou ton système déjà existant.</li><li>Un projet réel, même très simple.</li></ul><p class="callout">Sans entretien préalable, quelques lignes sur ton activité et ton besoin permettent de commencer.</p></div></div></div></section><section class="slide" data-title="Un AIOS, plusieurs assistants" aria-label="3. Un AIOS, plusieurs assistants"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Le même système, plusieurs portes d’entrée</span><h2 class="slide-title" tabindex="-1">Un AIOS, plusieurs assistants</h2></div><p class="lead">Le contexte et les méthodes restent dans tes fichiers.</p><div class="rows"><div class="row"><strong>Le noyau commun</strong><p>Les règles, les skills et la mémoire des décisions.</p></div><div class="row"><strong>Chaque assistant</strong><p>Une entrée pour lire le noyau et travailler dans le même dossier.</p></div><div class="row"><strong>Les outils</strong><p>Des accès aux fichiers, à l’agenda et aux mails à vérifier dans chaque application.</p></div></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Le détail</span><h2 class="detail-title" tabindex="-1">Le principe du noyau commun</h2></div><div class="filemap"><div><code>AGENTS.md</code><span>Entrée de l’assistant</span></div><div><code>CLAUDE.md</code><span>Entrée de Claude</span></div><div class="shared"><code>.ai/context.md</code><span>Contexte et méthodes partagés</span></div></div><p class="callout">Dans mon AIOS, ces deux entrées renvoient au même noyau.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">À comprendre</span><h2 class="detail-title" tabindex="-1">Ce qui permet la reprise</h2></div><ul class="clean"><li>L’assistant peut lire les fichiers du dossier choisi.</li><li>Il charge les consignes et les méthodes pertinentes.</li><li>Il écrit les résultats dans les fichiers de référence.</li><li>Les connexions aux outils se configurent dans son environnement.</li></ul><p class="small">La portabilité des fichiers ne garantit pas les mêmes outils ni les mêmes résultats avec tous les modèles.</p></div></div></div></section><section class="slide" data-title="Le socle de notre atelier" aria-label="4. Le socle de notre atelier"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Ce que nous mettons en place</span><h2 class="slide-title" tabindex="-1">Le socle de notre atelier</h2></div><div class="columns"><div><span class="eyebrow">Contexte</span><h3>Ton AIOS</h3><p>Ton activité, tes documents et un projet, à partir de Grill-me.</p></div><div><span class="eyebrow">Méthodes</span><h3>Décisions &amp; Close</h3><p>Les choix et leurs raisons, puis le travail conservé pour la suite.</p></div><div><span class="eyebrow">Connexions</span><h3>Agenda &amp; mails</h3><p>Une démonstration pour retrouver les informations utiles à ton projet.</p></div></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Le détail</span><h2 class="detail-title" tabindex="-1">Le rôle des skills</h2></div><div class="rows"><div class="row"><strong>Grill-me</strong><p>Poser les questions qui font émerger ton contexte. Tu peux le réutiliser.</p></div><div class="row"><strong>Décisions</strong><p>Accompagner un choix et en garder les raisons.</p></div><div class="row"><strong>Close</strong><p>Conserver les résultats de la discussion et préparer la reprise.</p></div></div><p class="callout">Retrouver et réutiliser les fichiers fait partie du travail de l’IA dans ton AIOS.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">En pratique</span><h2 class="detail-title" tabindex="-1">Voir le travail étape par étape</h2></div><div class="rows"><div class="row"><strong>Les nœuds</strong><p>Chaque étape indique son objectif, qui agit et les documents utiles.</p></div><div class="row"><strong>Les liens</strong><p>Ils montrent la suite du travail et les retours après une correction.</p></div><div class="row"><strong>Tes validations</strong><p>Tu vois où tu décides et ce que tu délègues.</p></div></div><p class="small">Interface de workflows à préparer. Exemple : demande → clarification → préparation → validation → remise.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">En pratique</span><h2 class="detail-title" tabindex="-1">Tes repères pendant et après l’atelier</h2></div><div class="rows"><div class="row"><strong>Pour commencer</strong><p>Ton Grill-me, le dossier choisi et le guide d’installation.</p></div><div class="row"><strong>Pour travailler</strong><p>Les demandes à copier : ranger, décider, clôturer et reprendre.</p></div><div class="row"><strong>Pour être accompagné</strong><p>Note l’étape qui bloque, le résultat attendu et ce que tu obtiens. Partage uniquement les éléments utiles, sans données privées.</p></div></div><p class="small">L’audit de cohérence sera à retrouver dans le Club SMART ; il ne fait pas partie de ce package.</p></div></div></div></section><section class="slide" data-title="Ton premier projet dans l’AIOS" aria-label="5. Ton premier projet dans l’AIOS"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">À toi de jouer · installation et contexte</span><h2 class="slide-title" tabindex="-1">Ton premier projet dans l’AIOS</h2></div><p class="lead">Une première base, remplie avec ta vraie matière.</p><div class="rows"><div class="row"><strong>Le dossier</strong><p>Un emplacement identifié, accessible à ton assistant.</p></div><div class="row"><strong>Le contexte</strong><p>Ton fichier issu de Grill-me, relu et corrigé si nécessaire.</p></div><div class="row"><strong>Le projet</strong><p>Un objectif, les éléments disponibles et une prochaine question.</p></div></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">La manipulation</span><h2 class="detail-title" tabindex="-1">L’installation, ensemble</h2></div><ul class="clean"><li>Ouvrir le dossier choisi et examiner ce qu’il contient déjà.</li><li>Installer le socle préparé pour l’atelier ou compléter l’existant.</li><li>Intégrer ton contexte et repérer les méthodes disponibles.</li><li>Ouvrir un projet réel à partir de ce contexte.</li></ul><p class="callout">Un AIOS existant se complète en préservant ses fichiers et ses décisions.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">L’exercice</span><h2 class="detail-title" tabindex="-1">Une première demande</h2></div><div class="prompt"><span class="eyebrow">À demander à ton IA</span><blockquote>À partir de mon contexte, aide-moi à ouvrir un projet réel. Demande-moi les précisions indispensables, puis indique les fichiers créés.</blockquote><button class="copy" type="button">Copier la demande</button></div><p class="check">À vérifier : le contexte est juste et le projet existe dans les fichiers.</p></div></div></div></section><section class="slide" data-title="La mémoire des décisions" aria-label="6. La mémoire des décisions"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Une skill pour conserver le pourquoi</span><h2 class="slide-title" tabindex="-1">La mémoire des décisions</h2></div><p class="lead">Un choix reste utile quand on retrouve ses raisons.</p><div class="rows"><div class="row"><strong>Le contexte</strong><p>Ce que tu cherches à résoudre et les contraintes qui comptent.</p></div><div class="row"><strong>Le choix</strong><p>L’option que tu as effectivement retenue.</p></div><div class="row"><strong>Les raisons</strong><p>Les critères et les alternatives réellement écartées.</p></div></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Avant de décider</span><h2 class="detail-title" tabindex="-1">Accompagner un choix</h2></div><div class="prompt"><span class="eyebrow">À demander à ton IA</span><blockquote>Aide-moi à comparer les options pour cette décision de mon projet. Explicite les critères et les compromis. Je te dirai ce que je retiens.</blockquote><button class="copy" type="button">Copier la demande</button></div><p class="check">Un sujet encore ouvert reste ouvert tant que tu n’as pas choisi.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Après ton choix</span><h2 class="detail-title" tabindex="-1">Enregistrer la décision</h2></div><div class="prompt"><span class="eyebrow">À demander à ton IA</span><blockquote>Conserve ma décision, les alternatives discutées et mes raisons. Relie-la au projet et montre-moi la fiche.</blockquote><button class="copy" type="button">Copier la demande</button></div><p class="check">À vérifier : la fiche reflète ton choix et l’IA peut la retrouver avant de proposer la suite.</p></div></div></div></section><section class="slide" data-title="Close : préparer la reprise" aria-label="7. Close : préparer la reprise"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Une skill pour terminer la discussion</span><h2 class="slide-title" tabindex="-1">Close : préparer la reprise</h2></div><p class="lead">La conversation se termine.<br>Le travail utile reste dans ton AIOS.</p><div class="rows"><div class="row"><strong>Les résultats</strong><p>Les fichiers du projet reflètent ce qui a été produit.</p></div><div class="row"><strong>Les décisions</strong><p>Les choix confirmés rejoignent la même mémoire.</p></div><div class="row"><strong>La suite</strong><p>Les questions ouvertes et le point de reprise restent visibles.</p></div></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">La manipulation</span><h2 class="detail-title" tabindex="-1">Clôturer la discussion</h2></div><div class="prompt"><span class="eyebrow">À demander à ton IA</span><blockquote>Clôture cette discussion. Conserve les résultats utiles, les décisions confirmées et les questions ouvertes. Indique où reprendre et montre les fichiers modifiés.</blockquote><button class="copy" type="button">Copier la demande</button></div><p class="check">Ouvre les fichiers pour vérifier ce qui a réellement été enregistré.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Le lien entre les méthodes</span><h2 class="detail-title" tabindex="-1">Une seule mémoire des décisions</h2></div><p class="lead">Décisions et Close alimentent les mêmes fiches.</p><div class="rows"><div class="row"><strong>Pendant le travail</strong><p>La skill Décisions conserve le choix et son pourquoi.</p></div><div class="row"><strong>À la clôture</strong><p>Close complète les fichiers concernés et prépare la reprise.</p></div><div class="row"><strong>La fois suivante</strong><p>L’IA relit les décisions pertinentes avant de continuer.</p></div></div></div></div></div></section><section class="slide" data-title="Mail et calendrier" aria-label="8. Mail et calendrier"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Manipulation accompagnée</span><h2 class="slide-title" tabindex="-1">Connecter ton mail et ton calendrier</h2></div><div class="rows"><div class="row"><strong>Choisir</strong><p>Identifier ton fournisseur et le compte que tu veux utiliser.</p></div><div class="row"><strong>Connecter</strong><p>Autoriser les accès dans ton application IA, avec accompagnement.</p></div><div class="row"><strong>Vérifier</strong><p>Retrouver un rendez-vous et un message que tu reconnais.</p></div></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">En pratique</span><h2 class="detail-title" tabindex="-1">Vérifier les bonnes informations</h2></div><div class="prompt"><blockquote>Consulte mon calendrier pour demain et retrouve un rendez-vous que je te désigne. Recherche ensuite les mails liés à ce rendez-vous. Cite les dates et les sources, et indique ce qui manque. Ne modifie rien et n’envoie aucun message.</blockquote><button class="copy">Copier la demande</button></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">En pratique</span><h2 class="detail-title" tabindex="-1">Si la connexion bloque</h2></div><div class="rows"><div class="row"><strong>Le compte</strong><p>Vérifie le compte connecté et le calendrier sélectionné.</p></div><div class="row"><strong>Les accès</strong><p>Repère ce que l’application autorise réellement à lire.</p></div><div class="row"><strong>La solution de repli</strong><p>Utilise des exports d’exercice et note l’accès restant à configurer.</p></div></div><p class="small">Les accès se vérifient pour chaque personne. Une démonstration collective ne connecte pas les comptes des participants.</p></div></div></div></section><section class="slide" data-title="Ta routine du matin" aria-label="9. Ta routine du matin"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Premier usage des connexions</span><h2 class="slide-title" tabindex="-1">Construire ta routine du matin</h2></div><div class="rows"><div class="row"><strong>Ton agenda</strong><p>Les rendez-vous du jour et ce qui mérite préparation.</p></div><div class="row"><strong>Tes mails</strong><p>Les échanges pertinents qui demandent ton attention.</p></div><div class="row"><strong>Tes projets</strong><p>Les points de reprise utiles, puis les priorités que tu choisis.</p></div></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">En pratique</span><h2 class="detail-title" tabindex="-1">Tester la routine une première fois</h2></div><div class="prompt"><blockquote>Prépare mon point du matin à partir de mon calendrier du jour, des mails pertinents et de mes projets dans l’AIOS. Présente les rendez-vous à préparer, les messages qui demandent mon attention et les points de reprise. Cite les sources, signale les inconnues et propose des priorités à valider. N’envoie rien et ne modifie pas mon calendrier.</blockquote><button class="copy">Copier la demande</button></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">En pratique</span><h2 class="detail-title" tabindex="-1">Choisir comment la relancer</h2></div><div class="rows"><div class="row"><strong>À la demande</strong><p>Une consigne ou une skill réutilisable pour lancer ton point du matin.</p></div><div class="row"><strong>Chaque matin</strong><p>Si tu le souhaites : choisir l’heure, le fuseau, les jours et où recevoir le résultat.</p></div><div class="row"><strong>Avant de programmer</strong><p>Vérifier les accès, ce qui tourne ordinateur fermé et ce qui se passe en cas d’échec.</p></div></div><p class="small">Tester et ajuster la routine avant de la programmer. La récurrence dépend de l’environnement de chaque personne.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">En pratique</span><h2 class="detail-title" tabindex="-1">S’il reste du temps : Claude Design</h2></div><p class="lead">Explorer une interface à partir d’un besoin concret.</p><div class="rows"><div class="row"><strong>Un exemple</strong><p>Donner une forme visuelle au point du matin ou au workflow.</p></div><div class="row"><strong>Un prototype</strong><p>Discuter les étapes, les informations et les validations à afficher.</p></div></div><p class="small">Bonus facultatif. Le socle et la routine restent utilisables sans Claude Design.</p></div></div></div></section><section class="slide" data-title="La reprise avec un autre assistant" aria-label="10. La reprise avec un autre assistant"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Un essai sur le même dossier</span><h2 class="slide-title" tabindex="-1">La reprise avec un autre assistant</h2></div><p class="lead">Retrouver le projet, sa dernière décision<br>et l’endroit où continuer.</p><div class="rows"><div class="row"><strong>Avant de changer</strong><p>Close enregistre le travail dans les fichiers.</p></div><div class="row"><strong>Avec le second assistant</strong><p>Le même dossier, une entrée vers le noyau commun.</p></div><div class="row"><strong>Au retour</strong><p>Les résultats doivent rester retrouvables.</p></div></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">La manipulation</span><h2 class="detail-title" tabindex="-1">Le test de reprise</h2></div><div class="prompt"><span class="eyebrow">À demander à ton IA</span><blockquote>Lis le contexte de cet AIOS et les méthodes pertinentes. Retrouve l’état de mon projet, la dernière décision et ses raisons. Propose la suite en citant les fichiers utilisés.</blockquote><button class="copy" type="button">Copier la demande</button></div><p class="check">À vérifier : la décision est exacte et le point de reprise correspond au travail conservé.</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Les limites du test</span><h2 class="detail-title" tabindex="-1">Ce que nous vérifions</h2></div><ul class="clean"><li>Le second assistant retrouve les informations dans les fichiers.</li><li>Il tient compte des choix déjà confirmés.</li><li>Une modification faite avec lui reste lisible par le premier assistant.</li><li>Ses accès à l’agenda et aux mails se vérifient séparément.</li></ul><p class="small">Sans second environnement prêt, une nouvelle conversation permet de tester la reprise dans le premier outil.</p></div></div></div></section><section class="slide" data-title="Les repères avant de repartir" aria-label="11. Les repères avant de repartir"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Ton point de contrôle</span><h2 class="slide-title" tabindex="-1">Les repères avant de repartir</h2></div><div class="checklist"><label><input type="checkbox"><span>Je retrouve mon contexte.</span></label><label><input type="checkbox"><span>Mon projet est dans les fichiers.</span></label><label><input type="checkbox"><span>Je sais conserver une décision et clôturer.</span></label><label><input type="checkbox"><span>Je sais comment reprendre mon travail.</span></label></div></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Ton bilan</span><h2 class="detail-title" tabindex="-1">Ce qui reste à compléter</h2></div><p class="lead">Un point précis permet de reprendre plus facilement.</p><div class="rows"><div class="row"><strong>Le contexte</strong><p>Quelle information manque encore ?</p></div><div class="row"><strong>Le système</strong><p>Quel fichier ou quel accès reste à configurer ?</p></div><div class="row"><strong>Le prochain usage</strong><p>Quel sujet veux-tu poursuivre ?</p></div></div></div></div></div></section><section class="slide" data-title="Ta prochaine session" aria-label="12. Ta prochaine session"><div class="pane-wrap"><div class="pane"><div class="pane-inner"><div class="slide-head"><span class="eyebrow">Club SMART · la suite t’appartient</span><h2 class="hero-title" tabindex="-1">Ta prochaine session</h2></div><p class="hero-sub">Quel vrai sujet vas-tu reprendre<br>avec ton AIOS ?</p></div></div><div class="pane detail"><div class="pane-inner"><div class="detail-head"><span class="eyebrow">Pour la prochaine fois</span><h2 class="detail-title" tabindex="-1">Une demande pour repartir</h2></div><div class="prompt"><span class="eyebrow">À demander à ton IA</span><blockquote>Relis le contexte de mon projet et son point de reprise. Dis-moi où j’en suis et aide-moi à avancer sur la prochaine étape.</blockquote><button class="copy" type="button">Copier la demande</button></div><p class="callout">Ton AIOS s’enrichit avec le travail que tu fais réellement.</p></div></div></div></section></main><dialog id="notesDialog" aria-labelledby="notesTitle"><button class="close-dialog" aria-label="Fermer les notes">×</button><h2 id="notesTitle">Notes</h2><div id="notesBody"></div></dialog><dialog id="tocDialog" aria-labelledby="tocTitle"><button class="close-dialog" aria-label="Fermer le sommaire">×</button><h2 id="tocTitle">Le parcours de l’atelier</h2><div class="toc-list" id="tocList"></div></dialog><script>(function(){
+'use strict';
+var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var root=document.documentElement;
+try{var saved=localStorage.getItem('atelier-aios-theme');if(saved==='dark'||saved==='light')root.dataset.theme=saved;}catch(e){}
+document.getElementById('themeToggle').addEventListener('click',function(){var t=root.dataset.theme==='dark'?'light':'dark';root.dataset.theme=t;try{localStorage.setItem('atelier-aios-theme',t);}catch(e){}});
+  // ---------- deck (multi-niveaux) ----------
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var progress = document.getElementById('progress');
+  var counter = document.getElementById('counter');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var downHint = document.getElementById('downHint');
+  var downLabel = document.getElementById('downLabel');
+  var upHint = document.getElementById('upHint');
+  var idx = 0, level = 0;
+  var dialogs=Array.from(document.querySelectorAll('dialog'));
+  function modalOpen(){return dialogs.some(d=>d.open);}
+
+  // initialise les hauteurs selon le nombre de panneaux de chaque slide
+  slides.forEach(function(sl){
+    var panes = sl.querySelectorAll('.pane');
+    var wrap = sl.querySelector('.pane-wrap');
+    wrap.style.height = (panes.length*100) + '%';
+    panes.forEach(function(pn){ pn.style.height = (100/panes.length) + '%'; });
+  });
+
+  slides.forEach(function(sl, i){
+    var b = document.createElement('button');
+    b.setAttribute('aria-label', 'Slide ' + (i+1) + ' — ' + sl.getAttribute('data-title'));
+    b.addEventListener('click', function(){ go(i, 0); });
+    progress.appendChild(b);
+  });
+  var dotBtns = Array.prototype.slice.call(progress.querySelectorAll('button'));
+
+  function paneCount(i){ return slides[i].querySelectorAll('.pane').length; }
+
+  function animateBars(i){
+    slides[i].querySelectorAll('.fill').forEach(function(f){
+      if(reduced){ f.style.width = f.getAttribute('data-w') + '%'; }
+      else{ setTimeout(function(){ f.style.width = f.getAttribute('data-w') + '%'; }, 250); }
+    });
+  }
+
+  function go(i, lv){
+    idx = Math.max(0, Math.min(slides.length-1, i));
+    var n = paneCount(idx);
+    level = Math.max(0, Math.min(n-1, lv));
+    deck.style.transform = 'translateX(-' + idx*100 + 'vw)';
+    slides.forEach(function(sl, j){
+      var wrap = sl.querySelector('.pane-wrap');
+      var nn = sl.querySelectorAll('.pane').length;
+      wrap.style.transform = 'translateY(-' + ((j===idx ? level : 0)*100/nn) + '%)';
+    });
+    dotBtns.forEach(function(d, j){ d.classList.toggle('on', j===idx); });
+    counter.textContent = (idx+1) + ' / ' + slides.length;
+    prevBtn.disabled = (idx===0);
+    nextBtn.disabled = (idx===slides.length-1);
+    var more = level < n-1;
+    downHint.classList.toggle('hidden', !more);
+    if(more){ downLabel.textContent = level===0 ? 'Voir le détail' : 'La suite du détail'; }
+    upHint.classList.toggle('show', level>0);
+    animateBars(idx);
+    slides.forEach(function(sl,j){sl.setAttribute('aria-hidden',String(j!==idx));sl.querySelectorAll('.pane').forEach(function(p,k){p.inert=j!==idx||k!==level;p.setAttribute('aria-hidden',String(p.inert));});});
+    document.getElementById('depth').textContent=level ? 'Détail '+level+' / '+(n-1) : '';
+    history.replaceState(null,'','#'+(idx+1)+'/'+level);
+    document.getElementById('live').textContent=slides[idx].dataset.title+(level?' · détail '+level:'');
+    dotBtns.forEach(function(d,j){d.setAttribute('aria-current',j===idx?'step':'false');});
+    var active=slides[idx].querySelectorAll('.pane')[level];
+    var h=active.querySelector('h1,h2');if(h)h.focus({preventScroll:true});
+    updateNotes();
+  }
+
+  prevBtn.addEventListener('click', function(){ go(idx-1, 0); });
+  nextBtn.addEventListener('click', function(){ go(idx+1, 0); });
+  downHint.addEventListener('click', function(){ go(idx, level+1); });
+  upHint.addEventListener('click', function(){ go(idx, level-1); });
+
+  document.addEventListener('keydown', function(e){
+    if(modalOpen() || e.target.closest('input,textarea,select,button,a,[contenteditable]'))return;
+    if(e.key.toLowerCase()==='n'){openNotes();return;}
+    if(e.key.toLowerCase()==='o'){openToc();return;}
+    if(e.key.toLowerCase()==='f'){toggleFullscreen();return;}
+    if(e.key==='ArrowRight' || e.key==='PageDown'){ e.preventDefault(); go(idx+1, 0); }
+    else if(e.key==='ArrowLeft' || e.key==='PageUp'){ e.preventDefault(); go(idx-1, 0); }
+    else if(e.key==='ArrowDown' || e.key===' '){
+      e.preventDefault(); go(idx, level+1);
+    }
+    else if(e.key==='ArrowUp'){ e.preventDefault(); go(idx, level-1); }
+    else if(e.key==='Home'){ e.preventDefault(); go(0,0); }
+    else if(e.key==='End'){ e.preventDefault(); go(slides.length-1,0); }
+  });
+
+  // touch swipe
+  var tx=null, ty=null, touchScroll=null, touchScrollTop=0;
+  document.addEventListener('touchstart', function(e){
+    if(modalOpen()||e.target.closest('button,input,a'))return;
+    touchScroll=e.target.closest('.pane-inner');touchScrollTop=touchScroll?touchScroll.scrollTop:0;
+    tx = e.touches[0].clientX; ty = e.touches[0].clientY;
+  }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if(tx===null || modalOpen()) return;
+    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)*1.4){
+      dx < 0 ? go(idx+1,0) : go(idx-1,0);
+    } else if(Math.abs(dy) > 60 && Math.abs(dy) > Math.abs(dx)*1.4){
+      if(touchScroll && (Math.abs(touchScroll.scrollTop-touchScrollTop)>2 || (dy<0&&touchScroll.scrollTop+touchScroll.clientHeight<touchScroll.scrollHeight-2) || (dy>0&&touchScroll.scrollTop>0))){tx=ty=null;return;}
+      if(dy < 0){ go(idx, level+1); } else { go(idx, level-1); }
+    }
+    tx = ty = null;
+  }, {passive:true});
+
+  // wheel (throttled)
+  var lastWheel = 0;
+  document.addEventListener('wheel', function(e){
+    if(modalOpen())return;
+    var inScroll = e.target.closest && e.target.closest('.pane-inner');
+    if(inScroll){
+      var el = e.target.closest('.pane-inner');
+      var atTop = el.scrollTop <= 0, atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+      if(!(e.deltaY < 0 && atTop) && !(e.deltaY > 0 && atBottom)) return;
+    }
+    var now = Date.now();
+    if(now - lastWheel < 700) return;
+    if(Math.abs(e.deltaY) < 25) return;
+    lastWheel = now;
+    if(e.deltaY > 0){ level < paneCount(idx)-1 ? go(idx, level+1) : go(idx+1, 0); }
+    else{ level>0 ? go(idx, level-1) : go(idx-1, 0); }
+  }, {passive:true});
+
+
+var noteData=[{"title": "Ton AIOS en pratique", "time": "00:00–00:03 · 3 min", "explain": "Présenter l’objectif : repartir avec un contexte personnel, un projet et des méthodes pour conserver le travail. Les capacités s’appuient sur des fichiers que l’on peut relire dans un autre assistant compatible.", "show": "Ouvrir un dossier d’exercice avec un projet déjà amorcé pour rendre le résultat concret.", "practice": "Chaque membre choisit un sujet réel et indique brièvement où il en est.", "check": "Chacun a un sujet, même très simple.", "fallback": "Proposer un projet fictif de préparation d’un rendez-vous si quelqu’un ne souhaite pas utiliser ses données."}, {"title": "Notre parcours ensemble", "time": "00:03–00:05 · 2 min", "explain": "Le support sert de repère entre les moments d’explication, de démonstration et de manipulation. L’exercice sur le transcript peut devenir une démo courte selon le temps disponible.", "show": "Présenter les six étapes et expliquer comment signaler un blocage.", "practice": "Les membres gardent leur fichier mon-contexte-aios.md à portée de main.", "check": "Identifier les personnes sans fichier de contexte ou sans environnement prêt.", "fallback": "Leur faire noter activité, projet et besoin en quelques lignes ; compléter le contexte plus tard."}, {"title": "Un AIOS, plusieurs assistants", "time": "00:05–00:10 · 5 min", "explain": "Distinguer le modèle de l’application qui lui donne accès aux fichiers et aux outils. Un noyau commun contient les consignes et les skills. Chaque assistant dispose d’un point d’entrée adapté. Les conversations et les identifiants de connexion ne constituent pas la mémoire commune.", "show": "Dans l’AIOS de Thomas, montrer AGENTS.md et CLAUDE.md, qui renvoient à .ai/context.md. Puis montrer le dossier commun des skills. Cet exemple documente l’architecture ; il ne prouve pas une compatibilité universelle.", "practice": "Chacun repère son dossier AIOS et l’environnement qui y accède.", "check": "Les membres savent distinguer ce qui reste dans les fichiers et ce qui dépend de l’application.", "fallback": "Dans un outil sans accès direct au dossier, montrer l’échange manuel de fichiers comme mode limité. Ne pas annoncer une mise à jour automatique du Vault."}, {"title": "Le socle de notre atelier", "time": "00:10–00:15 · 5 min", "explain": "IPCRA, contexte, Décisions et Close. Aucun wiki ni audit de cohérence dans le package. Présenter les panneaux sur les workflows et l’accompagnement ; interface à nœuds encore à concevoir.", "show": "Présenter la liste réelle des fichiers du package préparé pour l’atelier.", "practice": "Chaque membre situe ce qu’il possède déjà et ce qu’il doit ajouter.", "check": "Les membres identifient Close, Décisions et la place du contexte.", "fallback": "Si une skill n’est pas disponible dans la version testée du package, signaler précisément ce qui manque et montrer la méthode sans prétendre l’avoir installée."}, {"title": "Ton premier projet dans l’AIOS", "time": "00:15–00:45 · 30 min", "explain": "Installer dans le dossier choisi ou compléter un système existant après examen. Intégrer le contexte issu de Grill-me, puis amorcer un projet réel. La procédure technique dépend de l’environnement retenu et du package testé.", "show": "Créer ou ouvrir un AIOS d’exercice. Repérer le noyau commun, les projets, les ressources et la mémoire des décisions. Montrer où les skills sont découvertes.", "practice": "Installer le package préparé, importer son contexte et demander : « À partir de mon contexte, aide-moi à ouvrir un projet réel. Demande-moi les précisions indispensables, puis indique les fichiers créés. »", "check": "Ouvrir le fichier de contexte et la fiche projet ; contrôler les informations avec la personne. L’assistant indique les fichiers qu’il a lus.", "fallback": "Si l’installation dépasse le temps prévu, accompagner les personnes bloquées et raccourcir l’exercice transcript. Une personne peut suivre sur le dossier d’exercice sans annoncer son installation terminée."}, {"title": "La mémoire des décisions", "time": "00:45–01:00 · 15 min", "explain": "Installer ou vérifier la skill Décisions. Elle aide à expliciter les critères, puis conserve le choix réellement confirmé. La fiche mentionne aussi les alternatives réellement écartées et les raisons. L’IA consulte les décisions pertinentes pour la suite.", "show": "Exemple fictif : choisir un compte rendu court après un rendez-vous plutôt qu’une transcription complète pour un suivi courant. Expliquer que les contraintes peuvent conduire à revoir ce choix.", "practice": "« Aide-moi à comparer les options pour une décision de mon projet. » Après le choix : « Conserve ma décision, les alternatives discutées et mes raisons. Montre-moi la fiche et son lien depuis le projet. »", "check": "La fiche reflète le choix de la personne, les motifs sont exacts, le projet y renvoie et une question ouverte n’a pas été transformée en décision.", "fallback": "Utiliser une décision simple de format de document. Laisser une décision complexe ouverte si la personne n’a pas tranché."}, {"title": "Close : préparer la prochaine session", "time": "01:00–01:15 · 15 min", "explain": "Installer ou vérifier Close. La clôture écrit la matière utile dans les fichiers concernés, actualise la même mémoire des décisions et conserve un point de reprise. Une piste ne devient pas automatiquement une tâche acceptée.", "show": "Clôturer la discussion de démonstration, puis ouvrir les fichiers modifiés. Montrer précisément le résultat, la décision et ce qui reste à faire.", "practice": "« Clôture cette discussion. Conserve les résultats utiles, les décisions confirmées et les questions ouvertes. Indique où reprendre et montre les fichiers modifiés. »", "check": "Le travail est réellement enregistré ; la décision n’existe pas en deux versions concurrentes ; le point de reprise est compréhensible.", "fallback": "Si Close n’a produit qu’un résumé dans le chat, lui faire écrire les fichiers autorisés et vérifier leur contenu avant de changer de conversation."}, {"title": "Mail et calendrier : connexion accompagnée", "time": "01:15–01:35 · 20 min", "explain": "Accompagner chaque personne dans les accès mail et calendrier de son application. Identifier les fournisseurs avant la session.", "show": "Connecter un compte de démonstration, puis montrer une lecture vérifiable.", "practice": "Chacun connecte ses comptes lorsque son environnement le permet, puis reconnaît un rendez-vous et un mail retrouvés.", "check": "Compte, dates et sources corrects. Noter les connexions non terminées.", "fallback": "Exports fictifs clairement identifiés ; aide ciblée pour le compte bloqué."}, {"title": "Routine du matin", "time": "01:35–01:48 · 13 min", "explain": "Construire et tester une routine en lecture à partir des accès. La programmation vient après le test et le choix de la personne.", "show": "Faire produire un point du matin puis vérifier les sources avec le groupe.", "practice": "Chacun adapte la demande à ses besoins ; préciser heure, fuseau, jours et destination seulement pour une programmation souhaitée.", "check": "Résultat utile et vérifiable ; aucun envoi ou changement de calendrier implicite.", "fallback": "Relancer à la demande si la programmation est indisponible. Claude Design et le transcript deviennent des bonus sans temps réservé."}, {"title": "La reprise avec un autre assistant", "time": "01:48–01:55 · 7 min", "explain": "Le test porte sur des fichiers effectivement conservés. Les deux assistants travaillent successivement dans le même dossier ; le second dispose d’un point d’entrée qui lui permet de lire le noyau commun.", "show": "Fermer la première discussion après Close. Dans un second environnement compatible préparé à l’avance, ouvrir le même dossier et demander la reprise du projet.", "practice": "« Lis le contexte de cet AIOS et les méthodes pertinentes. Retrouve l’état de mon projet, la dernière décision et ses raisons. Propose la suite en citant les fichiers utilisés. »", "check": "Le second assistant retrouve la bonne décision et le point de reprise. Il préserve les fichiers existants. Vérifier séparément ses accès aux outils ; ils ne sont pas transférés par le dossier.", "fallback": "Sans second environnement configuré, tester la reprise dans une nouvelle conversation du premier outil et nommer la limite : cela vérifie la reprise, pas la portabilité entre assistants."}, {"title": "Les repères avant de repartir", "time": "01:55–01:58 · 3 min", "explain": "Faire le point sur les résultats observables et les blocages restants. Chaque membre garde un prochain usage concret.", "show": "Revenir aux fichiers du projet et aux méthodes disponibles.", "practice": "Chaque membre vérifie son contexte, son projet, une décision conservée et sa possibilité de reprise.", "check": "Recueillir ce qui fonctionne et ce qui reste à configurer, sans confondre une démonstration collective avec une installation réussie chez chacun.", "fallback": "Noter précisément le point de blocage et le fichier ou accès concerné pour permettre la reprise."}, {"title": "Ta prochaine session", "time": "01:58–02:00 · 2 min", "explain": "Conclure par un usage choisi par la personne. Le système s’enrichit avec le travail réellement fait.", "show": "Laisser affichée la question de clôture.", "practice": "Chaque membre nomme un vrai sujet qu’il souhaite reprendre avec son AIOS.", "check": "Chacun sait quelle première demande formuler lors de sa prochaine session.", "fallback": "Proposer simplement de reprendre le projet amorcé aujourd’hui."}];
+var extraNotes={3:'Tester la reprise entre les applications choisies.',4:'Deux détails : workflow et documentation. Audit réservé au Club SMART.',5:'Package IPCRA avec Close et Décisions prêt ; vérification dans les applications à terminer.',8:'Préparer les fournisseurs et comptes avant la session.',9:'Routine d’abord testée à la demande ; programmation selon environnement. Claude Design en bonus.',10:'Sans second assistant, distinguer reprise de conversation et portabilité.'};
+function updateNotes(){if(!noteData)return;var n=noteData[idx];var host=document.getElementById('notesBody');host.replaceChildren();var time=document.createElement('p');time.className='eyebrow';time.textContent=n.time+' · repère proposé';host.append(time);for(var pair of [['explain','À expliquer'],['show','À montrer'],['practice','À faire pratiquer'],['check','Avant de continuer'],['fallback','Si besoin']]){var p=document.createElement('p'),b=document.createElement('strong');b.textContent=pair[1]+'. ';p.append(b,document.createTextNode(n[pair[0]]));host.append(p);}if(extraNotes[idx+1]){var p=document.createElement('p');p.className='callout';p.textContent=extraNotes[idx+1];host.append(p);}document.getElementById('notesTitle').textContent=(idx+1)+'. '+slides[idx].dataset.title;}
+function openNotes(){updateNotes();document.getElementById('notesDialog').showModal();}
+function openToc(){document.querySelectorAll('#tocList button').forEach((b,i)=>b.classList.toggle('current',i===idx));document.getElementById('tocDialog').showModal();}
+async function toggleFullscreen(){try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch(e){document.getElementById('live').textContent='Le plein écran est indisponible dans cet aperçu.';}}
+document.getElementById('notesBtn').addEventListener('click',openNotes);document.getElementById('tocBtn').addEventListener('click',openToc);document.getElementById('fullBtn').addEventListener('click',toggleFullscreen);
+slides.forEach((s,i)=>{var b=document.createElement('button');b.textContent=String(i+1).padStart(2,'0')+' · '+s.dataset.title;b.addEventListener('click',()=>{document.getElementById('tocDialog').close();go(i,0);});document.getElementById('tocList').append(b);});
+dialogs.forEach(d=>{d.querySelector('.close-dialog').addEventListener('click',()=>d.close());d.addEventListener('click',e=>{if(e.target===d){var r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});d.addEventListener('close',()=>slides[idx].querySelectorAll('.pane')[level].querySelector('h1,h2').focus({preventScroll:true}));});
+document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',async()=>{var text=b.parentElement.querySelector('blockquote').textContent;try{await navigator.clipboard.writeText(text);b.textContent='Copié';}catch(e){var sel=getSelection(),r=document.createRange();r.selectNodeContents(b.parentElement.querySelector('blockquote'));sel.removeAllRanges();sel.addRange(r);b.textContent='Texte sélectionné';}setTimeout(()=>b.textContent='Copier la demande',1800);}));
+function fromHash(){var m=location.hash.match(/^#(\d+)\/(\d+)$/);go(m?Number(m[1])-1:0,m?Number(m[2]):0);}
+addEventListener('hashchange',fromHash);fromHash();
+})();</script></body></html>
